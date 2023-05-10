@@ -1,0 +1,13 @@
+{
+  "name": "bake-cakefile",
+  "version": "0.1",
+  "description": "create Cakefiles",
+  "type": "module",
+  "main": "dist/index.js",
+  "repository": "git@github.com:llucasls/bake-cakefile.git",
+  "author": "Lucas L. S. Haine <lucaslshaine@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "coffeescript": "^2.7.0"
+  }
+}
