@@ -1,7 +1,8 @@
-compose = (fns...) -> (value) -> fns.reduceRight(((acc, fn) -> fn(acc)), value)
+export compose = (fns...) ->
+    (value) -> fns.reduceRight(((acc, fn) -> fn(acc)), value)
 
 
-resolve_imports = (code, filepath) ->
+export resolve_imports = (code, filepath) ->
     lines = code.trim().split("\n")
     output_lines = []
     for line, index in lines
