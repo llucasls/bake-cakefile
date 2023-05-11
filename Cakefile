@@ -5,25 +5,50 @@ coffee = require("coffeescript")
 colorize = require("./colorize")
 
 
+COFFEE_BIN = "node_modules/.bin/coffee"
+SRC_DIR    = "src/"
+DIST_DIR   = ".dist/"
+TEST_DIR   = "test/"
+SPEC_DIR   = ".spec/"
+
+
 option("-c", "--compile [PATH]", "directory or file to compile")
 option("-o", "--output [PATH]", "directory of file path for compiled code")
 option("-p", "--path [PATH]", "file path")
 
 
-task("test", "run automated tests", ->
-    coffee_bin = "node_modules/.bin/coffee"
-    test_dir = "test/"
-    spec_dir = ".spec/"
-    for file in fs.readdirSync(spec_dir)
-        file_path = path.join(spec_dir, file)
+task("clean_source", "clean compiled source files", ->
+    for file in fs.readdirSync(DIST_DIR)
+        file_path = path.join(DIST_DIR, file)
         fs.rmSync(file_path, force: yes, recursive: yes)
+)
 
-    cp.execFileSync(coffee_bin, ["-o", spec_dir, "-c", test_dir])
 
-    if process.stdout.isTTY
-        test_reporter = "spec"
-    else
-        test_reporter = "tap"
+task("clean_test", "clean compiled test files", ->
+    for file in fs.readdirSync(SPEC_DIR)
+        file_path = path.join(SPEC_DIR, file)
+        fs.rmSync(file_path, force: yes, recursive: yes)
+)
+
+
+task("build_source", "compile source files", ->
+    await invoke("clean_source")
+
+    cp.execFileSync(COFFEE_BIN, ["-o", DIST_DIR, "-c", SRC_DIR])
+)
+
+
+task("build_test", "compile test files", ->
+    await invoke("build_source")
+    await invoke("clean_test")
+
+    cp.execFileSync(COFFEE_BIN, ["-o", SPEC_DIR, "-c", TEST_DIR])
+)
+
+
+task("test", "run automated tests", ->
+    await invoke("build_test")
+
     try
         result = cp.execSync("node --test", encoding: "UTF-8")
     catch error
