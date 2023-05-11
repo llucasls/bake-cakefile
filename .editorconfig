@@ -1,0 +1,9 @@
+root = true
+
+[*.coffee]
+indent_style = space
+indent_size = 4
+
+[Cakefile]
+indent_style = space
+indent_size = 4
