@@ -44,7 +44,7 @@ colorize_cancelled = (text) -> text.replace(/^(# cancelled) (\d+)$/gm,
     (match, prefix, number) -> "#{prefix} \x1b[31m#{number}\x1b[39m")
 
 
-module.exports = compose(
+colorize = compose(
     colorize_cancelled,
     colorize_todo_res,
     colorize_skipped,
@@ -57,3 +57,10 @@ module.exports = compose(
     colorize_skip,
     filter_tap_header,
 )
+
+
+module.exports = (text) ->
+    if process.stdout.isTTY
+        colorize(text)
+    else
+        text

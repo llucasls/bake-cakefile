@@ -10,13 +10,6 @@ option("-o", "--output [PATH]", "directory of file path for compiled code")
 option("-p", "--path [PATH]", "file path")
 
 
-colorize_test = (text) ->
-    if process.stdout.isTTY
-        return colorize(text)
-
-    text
-
-
 task("test", "run automated tests", ->
     coffee_bin = "node_modules/.bin/coffee"
     test_dir = "test/"
@@ -36,7 +29,7 @@ task("test", "run automated tests", ->
     catch error
         result = error.stdout
 
-    result = colorize_test(result).trim()
+    result = colorize(result).trim()
 
     console.log(result)
 )
