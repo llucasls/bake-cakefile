@@ -17,3 +17,10 @@ export resolve_imports = (code, filepath) ->
             output_lines.push(line)
 
     output_lines.join("\n")
+
+
+export class Resolver
+    @import_regex = new RegExp(/^import.*['"]([^'"]+)['"]$/gm)
+
+    @resolve_imports: (code) ->
+        code.split("\n")
