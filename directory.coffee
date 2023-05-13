@@ -31,7 +31,7 @@ get_dist_files = (src_dir, dist_dir, resolve_full_path = no) ->
 
 
 get_source = (file, src_dir, dist_dir) ->
-    file.replace(dist_dir, src_dir).replace(".js", ".coffee")
+    file.replace(dist_dir, src_dir).replace(/.(js|cjs|mjs)$/, ".coffee")
 
 
 exports.is_dir = is_dir
