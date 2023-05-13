@@ -69,3 +69,17 @@ task("test", "run automated tests", ->
 
     console.log(result)
 )
+
+task("report", "run tests with custom reporter", ->
+    await invoke("build_test")
+
+    try
+        result = cp.execSync("node --test --test-reporter=./.spec/reporter.js",
+        encoding: "UTF-8")
+    catch error
+        result = error.stdout
+
+    result = colorize(result).trim()
+
+    console.log(result)
+)
