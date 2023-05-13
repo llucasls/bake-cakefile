@@ -2,7 +2,10 @@ fs = require("fs")
 path = require("path")
 cp = require("child_process")
 coffee = require("coffeescript")
+main = "./#{require("./package").main}"
+
 colorize = require("./colorize")
+{ is_dir, tree, get_dist_files, get_source } = require("./directory")
 
 
 COFFEE_BIN = "node_modules/.bin/coffee"
@@ -10,11 +13,19 @@ SRC_DIR    = "src/"
 DIST_DIR   = ".dist/"
 TEST_DIR   = "test/"
 SPEC_DIR   = ".spec/"
+CURDIR     = process.env.PWD
+argv       = process.argv.slice(2)
 
 
 option("-c", "--compile [PATH]", "directory or file to compile")
 option("-o", "--output [PATH]", "directory of file path for compiled code")
 option("-p", "--path [PATH]", "file path")
+
+
+task("start", "run main file", ->
+    await invoke("build_source")
+    await import(main)
+)
 
 
 task("clean_source", "clean compiled source files", ->
