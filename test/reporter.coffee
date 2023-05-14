@@ -1,45 +1,45 @@
 # https://nodejs.org/dist/latest-v18.x/docs/api/test.html#class-testsstream
 
 test_event = ({ data, type }) ->
-    ###
-    if type == "test:fail"
-        console.error data.details
-        console.error data.name
-        console.error data.details.duration_ms
-        console.error data.details.error.failureType
-        console.error Object.keys data.details.error
-    if type == "test:pass"
-        console.error data.details.duration_ms
-    ###
+    space = "  ".repeat(data.nesting)
+    newline = if data.nesting == 0 then "\n\n" else "\n"
+
+    file = data.file or ""
+    file_label = if file then "file: \x1b[2m#{file}\x1b[0m" else ""
+
+    todo = if data.todo == "" then "todo" else data.todo
+    todo = if not data.todo? then "" else todo
+
+    if data.skip == ""
+        skip = "\x1b[1;33m skip\x1b[00m"
+    else if data.skip
+        skip = "\x1b[1;33m \x1b[0;93m#{data.skip}\x1b[39m"
+    else
+        skip = ""
+
+    if data.todo == ""
+        todo = "\x1b[1;35m󰗎 todo\x1b[00m"
+    else if data.todo
+        todo = "\x1b[1;35m󰗎 \x1b[0;95m#{data.todo}\x1b[39m"
+    else
+        todo = ""
+
+    pass = skip or todo or "\x1b[1;32m✔ pass\x1b[0m"
+
+    fail = skip or todo or "\x1b[1;31m✖ fail\x1b[0m"
+
     message =
-        "test:start": """\nstart:
-        name: #{data.name}
-        nesting: #{data.nesting}
-        file: #{data.file}
-        \n"""
-        "test:pass": """\npass:
-        name: #{data.name}
-        nesting: #{data.nesting}
-        test_number: #{data.testNumber}
-        file: #{data.file}
-        \n"""
-        "test:fail": """\nfail:
-        name: #{data.name}
-        nesting: #{data.nesting}
-        test_number: #{data.testNumber}
-        file: #{data.file}
-        \n"""
-        "test:plan": """\nplan:
-        nesting: #{data.nesting}
-        count: #{data.count}
-        file: #{data.file}
-        \n"""
-        "test:diagnostic": """\ndiagnostic:
-        nesting: #{data.nesting}
-        message: #{data.message}
-        file: #{data.file}
-        \n"""
-        "test:coverage": "coverage: #{Object.keys data}\n"
+        "test:start": """#{newline}#{space}→ testing: #{data.name}
+        """
+        "test:pass": """\n#{space}#{pass}
+        #{space}  #{file_label}
+        """
+        "test:fail": """\n#{space}#{fail}
+        #{space}  #{file_label}
+        """
+        "test:plan": if data.nesting == 0 then "\n" else ""
+        "test:diagnostic": "\n# #{data.message}"
+        "test:coverage": ""
 
     message[type]
 
