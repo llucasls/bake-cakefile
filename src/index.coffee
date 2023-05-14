@@ -1,5 +1,15 @@
+import * as path from "path"
+
+
 export compose = (fns...) ->
     (value) -> fns.reduceRight(((acc, fn) -> fn(acc)), value)
+
+
+export is_dir = (input_path) ->
+    try
+        fs.statSync(input_path).isDirectory()
+    catch
+        no
 
 
 export resolve_imports = (code, filepath) ->
@@ -17,6 +27,12 @@ export resolve_imports = (code, filepath) ->
             output_lines.push(line)
 
     output_lines.join("\n")
+
+
+export resolve_dir = (filepath) ->
+    if is_dir(filepath)
+        return path.join(filepath, "index.coffee")
+    filepath
 
 
 export class Resolver
