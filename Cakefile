@@ -79,7 +79,7 @@ task("report", "run tests with custom reporter", ->
     catch error
         result = error.stdout
 
-    result = colorize(result).trim()
+    result = result.trim()
 
     console.log(result)
 )
