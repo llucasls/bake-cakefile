@@ -29,10 +29,12 @@ export resolve_imports = (code, filepath) ->
     output_lines.join("\n")
 
 
-export resolve_dir = (filepath) ->
-    if is_dir(filepath)
-        return path.join(filepath, "index.coffee")
-    filepath
+export resolve_dir = (src_dir = ".", dist_dir = ".") ->
+    (filepath) ->
+        if is_dir(filepath)
+            index = path.join(filepath, "index.js")
+            return index.replace(src_dir, dist_dir)
+        filepath.replace(".coffee", ".js")
 
 
 export class Resolver
