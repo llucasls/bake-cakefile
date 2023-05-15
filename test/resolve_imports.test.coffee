@@ -1,8 +1,9 @@
 import { strict as assert } from "node:assert"
 import test from "node:test"
 import { describe } from "node:test"
+import path from "path"
 
-import { resolve_imports, Resolver } from "../.dist/index.js"
+import { resolve, Resolver } from "../.dist/index.js"
 
 
 describe("Test class made to resolve imports", ->
@@ -20,5 +21,25 @@ import { OtherModule } from './other.js'
             'import "dotenv/config"'
             "import { OtherModule } from './other.js'"]
         )
+    )
+)
+
+
+describe("Test resolve_imports function", ->
+    resolve_src = resolve("src", ".dist")
+    resolve_test = resolve("test", ".spec")
+
+    test("return path from compiled .coffee file", ->
+        input = 'import lib from "./src/index.coffee"'
+        output = 'import lib from "./.dist/index.js"'
+
+        assert.equal(resolve_src(input), output)
+    )
+
+    test("return path from directory", ->
+        input = 'import lib from "./src"'
+        output = 'import lib from "./.dist/index.js"'
+
+        assert.equal(resolve_src(input), output)
     )
 )
